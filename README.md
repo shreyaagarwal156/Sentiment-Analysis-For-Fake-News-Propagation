@@ -1,1 +1,1 @@
-# Sentiment-Analysis-Using-Fake-News-Detection
+Fake News Detection Using Sentimental Analysis
