@@ -1,39 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fake News Sentiment Analyzer</title>
-  <link rel="stylesheet" href="security.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sentiment Analysis for Fake News Propagation</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>📰 SENTIMENT ANALYSIS USING FAKE NEWS DETECTION</h1>
-    <p>Understand how emotions influence the spread of fake news</p>
-  </header>
+  <div class="container">
+    <header>
+      <h1>Sentiment Analysis for Fake News Propagation</h1>
+    </header>
 
-  <section class="info-section">
-    <div class="card">
-      <h2>📌 What is Fake News?</h2>
-      <p>Fake news is misinformation spread through traditional news media or online social platforms. Fake news often has the aim of damaging the reputation of a person or entity or making money through advertising revenue</p>
-    </div>
-    <div class="card">
-      <h2>💬 Role of Emotions</h2>
-      <p>Emotions play a significant role in the spread and belief of fake news, often being intentionally used to manipulate individuals. Fake news often evokes strong, negative emotions like anger, disgust, and fear, which can increase attention and make people more susceptible to believing the information.</p>
-    </div>
-  </section>
+    <main>
+      <label for="news-input" class="input-label">Enter your news article:</label>
+      <textarea id="news-input" placeholder="Paste the news article here..." rows="8"></textarea>
 
-  <section class="form-section">
-    <h2>🧪 Try It Yourself</h2>
-    <p>Paste any news article or statement below to analyze:</p>
-    <textarea id="newsInput" placeholder="Enter news content here..."></textarea>
-    <button onclick="analyzeNews()">Analyze</button>
-    <div id="result"></div>
-  </section>
+      <button id="check-btn" aria-label="Check News">Check News</button>
 
-  <footer>
-    <p>!!! Created by white hats !!!</p>
-  </footer>
+      <div class="result hidden" id="result">
+        <div>
+          <strong>News Status:</strong> <span id="news-status"></span>
+        </div>
+        <div>
+          <strong>Sentiment:</strong> <span id="sentiment"></span>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <small>© 2025 Sentiment Analysis for Fake News Propagation</small>
+    </footer>
+  </div>
+
+  <script>
+    const checkBtn = document.getElementById('check-btn');
+    const newsInput = document.getElementById('news-input');
+    const resultDiv = document.getElementById('result');
+    const newsStatusSpan = document.getElementById('news-status');
+    const sentimentSpan = document.getElementById('sentiment');
+
+    checkBtn.addEventListener('click', async () => {
+      const newsText = newsInput.value.trim();
+      if (!newsText) {
+        alert('Please enter a news article!');
+        return;
+      }
+
+      checkBtn.disabled = true;
+      checkBtn.textContent = 'Checking...';
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ news: newsText })
+        });
+
+        const data = await response.json();
+        newsStatusSpan.textContent = data.status;
+        sentimentSpan.textContent = data.sentiment;
+
+        resultDiv.classList.remove('hidden');
+        resultDiv.classList.add('fade-in');
+      } catch (err) {
+        alert('Failed to connect to backend.');
+        console.error(err);
+      }
+
+      checkBtn.disabled = false;
+      checkBtn.textContent = 'Check News';
+    });
   </script>
 </body>
 </html>
